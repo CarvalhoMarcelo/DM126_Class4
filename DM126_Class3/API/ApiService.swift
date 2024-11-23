@@ -17,8 +17,8 @@ struct ApiService {
                     print(goals)
                     completion(goals, nil)
                 case .failure(let error):
+                    print("Erro: \(error)")
                     completion(nil, error)
-                default: break
                 }
             }
     }
