@@ -10,34 +10,34 @@ import SwiftUI
 struct ContentView: View {
     private var service = ApiService()
     @State private var APIgoals: [GoalType] = []
-    @State private var isLoading = false
+    @State private var isLoading = true
     
     var body: some View {
         VStack {
-            NavigationBar()
-        }.padding()
-        
-        if self.isLoading {
-            ProgressView("Carregando...")
-                .progressViewStyle(CircularProgressViewStyle())
-                .font(.headline)
-        } else {
-            ScrollView(.vertical, showsIndicators: false){
+            if self.isLoading {
+                ProgressView("Carregando...")
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .font(.headline)
+            } else {
                 VStack {
-                    FeaturesGrid()
-                    CarrosselTabView()
-                    GoalContainer(goals: APIgoals)
+                    NavigationBar()
+                }.padding()
+                ScrollView(.vertical, showsIndicators: false){
+                    VStack {
+                        FeaturesGrid()
+                        CarrosselTabView()
+                        GoalContainer(goals: APIgoals)
+                    }
                 }
-            }.onAppear{
-                getGoalsAF()
             }
+        }.onAppear {
+            getGoalsAF()
         }
     }
     
     func getGoalsAF() {
-        self.isLoading = false
         service.getGoals {goals, error in
-            DispatchQueue.main.async {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
                 self.isLoading = false
                 if let goals = goals {
                         self.APIgoals = goals
